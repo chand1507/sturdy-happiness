@@ -1,0 +1,63 @@
+package conn;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class Vehicle {
+	public void display() throws SQLException
+	{
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@10.219.34.3:1521/orcl","trg718","training718");
+
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery("SELECT * FROM vehicle");
+		while(rs.next())
+	{
+			System.out.println(rs.getString(1));
+			System.out.println(rs.getLong(2));
+			System.out.println(rs.getInt(3));
+		}
+	}
+	public static void main(String[] args) throws ClassNotFoundException {
+	Scanner scanner =  new Scanner(System.in);
+		
+		String brand;
+		long price;
+		int cubcapacity;
+		Vehicle v = new Vehicle();
+		
+		
+
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@10.219.34.3:1521/orcl","trg718","training718");
+			Statement st = con.createStatement();
+			PreparedStatement pst = con.prepareStatement("insert into vehicle values(?,?,?)");
+			
+			
+			System.out.println("enter the brand");
+			brand=scanner.next();
+			pst.setString(1, brand);
+			
+			System.out.println("enter the price");
+			price=scanner.nextLong();
+			pst.setLong(2,price);
+			
+			System.out.println("enter the Cubcapacity");
+			cubcapacity=scanner.nextInt();
+			pst.setInt(3,cubcapacity);
+			
+			pst.executeUpdate();
+			v.display();
+			con.close();
+		}
+		catch(SQLException sqle){
+			System.out.println("exception " + sqle);
+		}
+	}
+
+}
